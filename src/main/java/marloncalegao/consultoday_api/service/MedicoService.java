@@ -26,12 +26,27 @@ public class MedicoService {
     }
 
     public MedicoResponseDTO cadastrarMedico(MedicoRequestDTO dados){
-        if (medicoRepository.findByEmail(dados.email()) != null) {
+        Medico medicoExistentePorEmail = (Medico) medicoRepository.findByEmail(dados.email());
+        Medico medicoExistentePorCrm = (Medico) medicoRepository.findByCrm(dados.crm());
+
+        // Verifica duplicidade por e-mail
+        if (medicoExistentePorEmail != null && medicoExistentePorEmail.getAtivo()) {
             throw new ValidacaoException("Email já cadastrado");
         }
 
-        if (medicoRepository.findByCrm(dados.crm()) != null) {
+        // Verifica duplicidade por CRM
+        if (medicoExistentePorCrm != null && medicoExistentePorCrm.getAtivo()) {
             throw new ValidacaoException("CRM já cadastrado");
+        }
+
+        // Caso exista um médico com o mesmo CRM ou e-mail, mas inativo → reativa
+        if (medicoExistentePorCrm != null && !medicoExistentePorCrm.getAtivo()) {
+            medicoExistentePorCrm.setAtivo(true);
+            medicoExistentePorCrm.setNome(dados.nome());
+            medicoExistentePorCrm.setTelefone(dados.telefone());
+            medicoExistentePorCrm.setEspecialidade(dados.especialidade());
+            medicoExistentePorCrm.setSenha(passwordEncoder.encode(dados.senha()));
+            return new MedicoResponseDTO(medicoRepository.save(medicoExistentePorCrm));
         }
 
         String senhaCriptografada = passwordEncoder.encode(dados.senha());
@@ -74,6 +89,18 @@ public class MedicoService {
         }
 
         return new MedicoResponseDTO(medico);
+    }
+
+    @Transactional
+    public void excluirMedico(Long id){
+        Medico medico = medicoRepository.findById(id)
+            .orElseThrow(() -> new ValidacaoException("Médico não encontrado"));
+
+            // if (agendamentoRepository.existsByMedicoIdAndDataHoraAfter(id, LocalDateTime.now())) {
+            //     throw new ValidacaoException("Médico possui agendamentos futuros e não pode ser inativado.");
+            // }
+
+            medico.setAtivo(false);
     }
     
 }

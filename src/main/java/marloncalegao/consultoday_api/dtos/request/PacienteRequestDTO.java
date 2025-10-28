@@ -17,7 +17,9 @@ public record PacienteRequestDTO(
     String cpf,
 
     @NotBlank(message = "A senha é obrigatória")
-    String senha
+    String senha,
+
+    boolean ativo
 ) {
 
 }

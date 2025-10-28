@@ -4,6 +4,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,13 @@ public class MedicoController {
     public ResponseEntity<MedicoResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid MedicoUpdateDTO dados) {
         MedicoResponseDTO medicoAtualizado = medicoService.atualizarMedico(id, dados);
         return ResponseEntity.ok(medicoAtualizado);
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        medicoService.excluirMedico(id);
+        return ResponseEntity.noContent().build();
     }
     
 }
