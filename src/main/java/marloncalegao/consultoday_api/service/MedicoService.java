@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import marloncalegao.consultoday_api.dtos.MedicoListagemDTO;
-import marloncalegao.consultoday_api.dtos.MedicoUpdateDTO;
+import marloncalegao.consultoday_api.dtos.medico.MedicoListagemDTO;
+import marloncalegao.consultoday_api.dtos.medico.MedicoUpdateDTO;
 import marloncalegao.consultoday_api.dtos.request.MedicoRequestDTO;
 import marloncalegao.consultoday_api.dtos.response.MedicoResponseDTO;
 import marloncalegao.consultoday_api.exception.ValidacaoException;
@@ -29,17 +29,14 @@ public class MedicoService {
         Medico medicoExistentePorEmail = (Medico) medicoRepository.findByEmail(dados.email());
         Medico medicoExistentePorCrm = (Medico) medicoRepository.findByCrm(dados.crm());
 
-        // Verifica duplicidade por e-mail
         if (medicoExistentePorEmail != null && medicoExistentePorEmail.getAtivo()) {
             throw new ValidacaoException("Email já cadastrado");
         }
 
-        // Verifica duplicidade por CRM
         if (medicoExistentePorCrm != null && medicoExistentePorCrm.getAtivo()) {
             throw new ValidacaoException("CRM já cadastrado");
         }
 
-        // Caso exista um médico com o mesmo CRM ou e-mail, mas inativo → reativa
         if (medicoExistentePorCrm != null && !medicoExistentePorCrm.getAtivo()) {
             medicoExistentePorCrm.setAtivo(true);
             medicoExistentePorCrm.setNome(dados.nome());

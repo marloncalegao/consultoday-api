@@ -1,4 +1,4 @@
-package marloncalegao.consultoday_api.dtos;
+package marloncalegao.consultoday_api.dtos.medico;
 
 import marloncalegao.consultoday_api.enums.Especialidade;
 import marloncalegao.consultoday_api.model.Medico;

@@ -1,4 +1,4 @@
-package marloncalegao.consultoday_api.dtos;
+package marloncalegao.consultoday_api.dtos.medico;
 
 public record MedicoUpdateDTO(
     String nome,
