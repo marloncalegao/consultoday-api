@@ -3,11 +3,14 @@ package marloncalegao.consultoday_api.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import marloncalegao.consultoday_api.dtos.MedicoListagemDTO;
 import marloncalegao.consultoday_api.dtos.request.MedicoRequestDTO;
 import marloncalegao.consultoday_api.dtos.response.MedicoResponseDTO;
 import marloncalegao.consultoday_api.exception.ValidacaoException;
 import marloncalegao.consultoday_api.model.Medico;
 import marloncalegao.consultoday_api.repository.MedicoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class MedicoService {
@@ -45,6 +48,10 @@ public class MedicoService {
         Medico medicoSalvo = medicoRepository.save(novoMedico);
 
         return new MedicoResponseDTO(medicoSalvo);
+    }
+
+    public Page<MedicoListagemDTO> listarMedicos(Pageable pageable) {
+        return medicoRepository.findByAtivoTrue(pageable).map(MedicoListagemDTO::new);
     }
     
 }
