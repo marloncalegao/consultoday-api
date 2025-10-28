@@ -3,7 +3,9 @@ package marloncalegao.consultoday_api.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import marloncalegao.consultoday_api.dtos.MedicoListagemDTO;
+import marloncalegao.consultoday_api.dtos.MedicoUpdateDTO;
 import marloncalegao.consultoday_api.dtos.request.MedicoRequestDTO;
 import marloncalegao.consultoday_api.dtos.response.MedicoResponseDTO;
 import marloncalegao.consultoday_api.exception.ValidacaoException;
@@ -52,6 +54,26 @@ public class MedicoService {
 
     public Page<MedicoListagemDTO> listarMedicos(Pageable pageable) {
         return medicoRepository.findByAtivoTrue(pageable).map(MedicoListagemDTO::new);
+    }
+
+    @Transactional
+    public MedicoResponseDTO atualizarMedico(Long id, MedicoUpdateDTO dados){
+        Medico medico = medicoRepository.findById(id)
+            .orElseThrow(() -> new ValidacaoException("Médico não encontrado"));
+
+        if (dados.nome() != null && !dados.nome().isBlank()) {
+            medico.setNome(dados.nome());
+        }
+
+        if (dados.telefone() != null && !dados.telefone().isBlank()) {
+            medico.setTelefone(dados.telefone());
+        }
+
+        if (dados.email() != null && !dados.email().isBlank()) {
+            medico.setEmail(dados.email());
+        }
+
+        return new MedicoResponseDTO(medico);
     }
     
 }
