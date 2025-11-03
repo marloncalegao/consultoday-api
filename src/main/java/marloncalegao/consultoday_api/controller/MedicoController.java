@@ -36,20 +36,21 @@ public class MedicoController {
     }
     
     @GetMapping
+    @PreAuthorize("hasAnyRole('MEDICO', 'PACIENTE')")
     public ResponseEntity<Page<MedicoListagemDTO>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
                 Page<MedicoListagemDTO> lista = medicoService.listarMedicos(paginacao);
                 return ResponseEntity.ok(lista);
     }
 
     @PutMapping("/atualizar/{id}")
-    @PreAuthorize("#id == authentication.principal.id")
+    @PreAuthorize("hasRole('MEDICO') and #id == authentication.principal.id")
     public ResponseEntity<MedicoResponseDTO> atualizar(@PathVariable Long id, @RequestBody @Valid MedicoUpdateDTO dados) {
         MedicoResponseDTO medicoAtualizado = medicoService.atualizarMedico(id, dados);
         return ResponseEntity.ok(medicoAtualizado);
     }
 
     @DeleteMapping("/excluir/{id}")
-    @PreAuthorize("#id == authentication.principal.id")
+    @PreAuthorize("hasRole('MEDICO') and #id == authentication.principal.id")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         medicoService.excluirMedico(id);
         return ResponseEntity.noContent().build();

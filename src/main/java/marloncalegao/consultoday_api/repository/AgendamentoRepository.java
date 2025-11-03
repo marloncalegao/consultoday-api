@@ -18,4 +18,8 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     Page<Agendamento> findByMedicoIdAndStatusNot(Long idMedico, StatusAgendamento statusExcluido, Pageable paginacao);
     
     Page<Agendamento> findByPacienteIdAndStatusNot(Long idPaciente, StatusAgendamento statusExcluido, Pageable paginacao);
+
+    boolean existsByPacienteIdAndDataHoraBetweenAndStatusNot(Long idPaciente, LocalDateTime inicioDoDia, LocalDateTime fimDoDia, StatusAgendamento statusExcluido);
+    
+    boolean existsByPacienteIdAndDataHoraAfterAndStatusNot(Long idPaciente, LocalDateTime now, StatusAgendamento statusExcluido);
 }

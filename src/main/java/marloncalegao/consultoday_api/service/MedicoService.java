@@ -40,6 +40,7 @@ public class MedicoService {
         if (medicoExistentePorCrm != null && !medicoExistentePorCrm.getAtivo()) {
             medicoExistentePorCrm.setAtivo(true);
             medicoExistentePorCrm.setNome(dados.nome());
+            medicoExistentePorCrm.setEmail(dados.email());
             medicoExistentePorCrm.setTelefone(dados.telefone());
             medicoExistentePorCrm.setEspecialidade(dados.especialidade());
             medicoExistentePorCrm.setSenha(passwordEncoder.encode(dados.senha()));
