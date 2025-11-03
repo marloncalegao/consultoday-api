@@ -3,12 +3,11 @@ package marloncalegao.consultoday_api.model;
 import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 
 @Table(name = "pacientes")
 @Entity(name = "Paciente")
-public class Paciente implements UserDetails {
+public class Paciente implements UsuarioAutenticado {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

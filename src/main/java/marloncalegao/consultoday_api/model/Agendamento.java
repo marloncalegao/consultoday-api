@@ -2,6 +2,7 @@ package marloncalegao.consultoday_api.model;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import marloncalegao.consultoday_api.enums.StatusAgendamento;
 
 @Table(name = "agendamentos")
 @Entity(name = "Agendamento")
@@ -15,11 +16,15 @@ public class Agendamento {
 
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "paciente_id")
     private Paciente paciente;
-    
+
     private LocalDateTime dataHora;
     private LocalDateTime dataCancelamento;
-    
 
+    private String motivoCancelamento;
+
+    @Enumerated(EnumType.STRING)
+    private StatusAgendamento status;
+    
     //-- Getters e Setters --
 
     public Long getId() {
@@ -62,12 +67,29 @@ public class Agendamento {
         this.dataCancelamento = dataCancelamento;
     }
 
+    public String getMotivoCancelamento() {
+        return this.motivoCancelamento;
+    }
+
+    public void setMotivoCancelamento(String motivoCancelamento) {
+        this.motivoCancelamento = motivoCancelamento;
+    }
+
+    public StatusAgendamento getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(StatusAgendamento status) {
+        this.status = status;
+    }
+
     //-- Construtores --
 
-    public Agendamento(Medico medico, Paciente paciente, LocalDateTime dataHora) {
+    public Agendamento(Medico medico, Paciente paciente, LocalDateTime dataHora, StatusAgendamento status) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataHora = dataHora;
+        this.status = status;
     }
 
     public Agendamento() {
