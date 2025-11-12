@@ -100,5 +100,13 @@ public class MedicoService {
 
             medico.setAtivo(false);
     }
-    
+
+    public MedicoResponseDTO buscarPorId(Long id) {
+        var medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+        return new MedicoResponseDTO(medico);
+    }
+
+
+
 }

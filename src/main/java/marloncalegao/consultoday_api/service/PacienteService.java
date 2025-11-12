@@ -102,5 +102,11 @@ public class PacienteService {
         }
         paciente.setAtivo(false);
     }
-    
+
+    public PacienteResponseDTO buscarPorId(Long id) {
+        var paciente = pacienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+        return new PacienteResponseDTO(paciente);
+    }
+
 }

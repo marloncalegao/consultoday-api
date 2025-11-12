@@ -1,5 +1,6 @@
 package marloncalegao.consultoday_api.controller;
 
+import marloncalegao.consultoday_api.model.UsuarioAutenticado;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class MedicoController {
     }
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('MEDICO', 'PACIENTE')")
+    @PreAuthorize("hasAnyAuthority('PACIENTE', 'ROLE_PACIENTE', 'MEDICO', 'ROLE_MEDICO')")
     public ResponseEntity<Page<MedicoListagemDTO>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){
                 Page<MedicoListagemDTO> lista = medicoService.listarMedicos(paginacao);
                 return ResponseEntity.ok(lista);
@@ -55,5 +56,21 @@ public class MedicoController {
         medicoService.excluirMedico(id);
         return ResponseEntity.noContent().build();
     }
-    
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('MEDICO')")
+    public ResponseEntity<MedicoResponseDTO> getMeuPerfil(org.springframework.security.core.Authentication authentication) {
+        var usuario = (UsuarioAutenticado) authentication.getPrincipal();
+        var medico = medicoService.buscarPorId(usuario.getId());
+        return ResponseEntity.ok(medico);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_PACIENTE', 'ROLE_MEDICO')")
+    public ResponseEntity<MedicoResponseDTO> buscarPorId(@PathVariable Long id) {
+        MedicoResponseDTO medico = medicoService.buscarPorId(id);
+        return ResponseEntity.ok(medico);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package marloncalegao.consultoday_api.controller;
 
+import marloncalegao.consultoday_api.model.UsuarioAutenticado;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,7 +38,7 @@ public class PacienteController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MEDICO', 'PACIENTE')")
+    @PreAuthorize("hasAnyAuthority('PACIENTE', 'ROLE_PACIENTE', 'MEDICO', 'ROLE_MEDICO')")
     public ResponseEntity<Page<PacienteResponseDTO>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) {
         Page<PacienteResponseDTO> lista = pacienteService.listarPacientes(paginacao);
         return ResponseEntity.ok(lista);
@@ -56,4 +57,13 @@ public class PacienteController {
         pacienteService.excluirPaciente(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public ResponseEntity<PacienteResponseDTO> getMeuPerfil(org.springframework.security.core.Authentication authentication) {
+        var usuario = (UsuarioAutenticado) authentication.getPrincipal();
+        var paciente = pacienteService.buscarPorId(usuario.getId());
+        return ResponseEntity.ok(paciente);
+    }
+
 }

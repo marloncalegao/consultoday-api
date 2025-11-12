@@ -24,7 +24,10 @@ public class Agendamento {
 
     @Enumerated(EnumType.STRING)
     private StatusAgendamento status;
-    
+
+    @Column(name = "data_finalizacao")
+    private LocalDateTime dataFinalizacao;
+
     //-- Getters e Setters --
 
     public Long getId() {
@@ -81,6 +84,14 @@ public class Agendamento {
 
     public void setStatus(StatusAgendamento status) {
         this.status = status;
+    }
+
+    public LocalDateTime getDataFinalizacao() {
+        return dataFinalizacao;
+    }
+
+    public void setDataFinalizacao(LocalDateTime dataFinalizacao) {
+        this.dataFinalizacao = dataFinalizacao;
     }
 
     //-- Construtores --

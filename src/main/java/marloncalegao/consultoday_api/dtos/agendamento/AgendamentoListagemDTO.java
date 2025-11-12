@@ -1,10 +1,10 @@
 package marloncalegao.consultoday_api.dtos.agendamento;
 
 import java.time.LocalDateTime;
-
+import marloncalegao.consultoday_api.enums.StatusAgendamento;
 import marloncalegao.consultoday_api.model.Agendamento;
 
-public record AgendamentoListagemDTO (
+public record AgendamentoListagemDTO(
         Long idAgendamento,
         LocalDateTime dataHora,
         String nomeMedico,
@@ -12,7 +12,8 @@ public record AgendamentoListagemDTO (
         String nomePaciente,
         String CpfPaciente,
         LocalDateTime dataCancelamento,
-        String MotivoCancelamento
+        String MotivoCancelamento,
+        StatusAgendamento status // ✅ novo campo
 ) {
     public AgendamentoListagemDTO(Agendamento agendamento) {
         this(
@@ -23,7 +24,8 @@ public record AgendamentoListagemDTO (
                 agendamento.getPaciente().getNome(),
                 agendamento.getPaciente().getCpf(),
                 agendamento.getDataCancelamento(),
-                agendamento.getMotivoCancelamento()
+                agendamento.getMotivoCancelamento(),
+                agendamento.getStatus() // ✅ inclui o status do agendamento
         );
     }
 }
