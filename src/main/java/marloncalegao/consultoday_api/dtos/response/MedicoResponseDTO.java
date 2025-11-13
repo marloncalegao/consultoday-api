@@ -7,6 +7,7 @@ public record MedicoResponseDTO (
     Long id,
     String nome,
     String email,
+    String telefone,
     String crm,
     Especialidade especialidade
 ) {
@@ -15,6 +16,7 @@ public record MedicoResponseDTO (
             medico.getId(),
             medico.getNome(),
             medico.getEmail(),
+            medico.getTelefone(),
             medico.getCrm(),
             medico.getEspecialidade()
         );

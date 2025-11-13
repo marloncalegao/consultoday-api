@@ -3,6 +3,8 @@ package marloncalegao.consultoday_api.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,5 +41,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
             "AND a.status <> 'CANCELADO'")
     boolean existsByMedicoAndDataHora(@Param("idMedico") Long idMedico,
                                       @Param("dataHora") LocalDateTime dataHora);
+
+    boolean existsByMedicoIdAndDataHoraAndDataCancelamentoIsNull(Long id, @NotNull(message = "A data e hora são obrigatórias") @Future(message = "A data da consulta deve ser futura") LocalDateTime localDateTime);
 }
 

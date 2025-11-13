@@ -21,6 +21,7 @@ public class AgendaMedicoService {
     private final AgendaMedicoRepository agendaRepository;
     private final MedicoRepository medicoRepository;
 
+
     public AgendaMedicoService(AgendaMedicoRepository agendaRepository, MedicoRepository medicoRepository) {
         this.agendaRepository = agendaRepository;
         this.medicoRepository = medicoRepository;
@@ -51,44 +52,69 @@ public class AgendaMedicoService {
     // LISTAR HORÁRIOS DO DIA (usado no controller)
     // ===========================================================
     public List<AgendaSlotDTO> listarSlotsPorData(Long idMedico, LocalDate data) {
-        // Gera horários padrão apenas para dias úteis
         boolean diaUtil = !(data.getDayOfWeek() == DayOfWeek.SATURDAY || data.getDayOfWeek() == DayOfWeek.SUNDAY);
+
         List<LocalDateTime> horariosPadrao = diaUtil
                 ? IntStream.rangeClosed(8, 18)
                 .mapToObj(h -> LocalDateTime.of(data, LocalTime.of(h, 0)))
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
-        // Busca horários cadastrados no banco
         List<AgendaMedico> horariosBanco = agendaRepository.findByMedicoIdAndDataHoraBetween(
                 idMedico,
                 data.atStartOfDay(),
                 data.plusDays(1).atStartOfDay()
         );
 
-        // Constrói mapa com status dos horários padrão
+        // mapa: dataHora -> disponível?
         Map<LocalDateTime, Boolean> status = horariosBanco.stream()
                 .collect(Collectors.toMap(AgendaMedico::getDataHora, AgendaMedico::isDisponivel));
 
-        // Adiciona horários padrão
-        List<AgendaSlotDTO> slots = horariosPadrao.stream()
-                .map(dt -> new AgendaSlotDTO(null, dt, status.getOrDefault(dt, true)))
-                .collect(Collectors.toList());
+        List<AgendaSlotDTO> slots = new ArrayList<>();
 
-        // Agora inclui os horários manuais fora do range 08–18
-        List<AgendaSlotDTO> extras = horariosBanco.stream()
+        // ====== HORÁRIOS PADRÃO: disponível OU bloqueado ======
+        for (LocalDateTime dt : horariosPadrao) {
+            boolean disponivel = status.getOrDefault(dt, true);
+
+            // SE está bloqueado → ENVIAR COMO BLOQUEADO
+            if (!disponivel) {
+                Optional<AgendaMedico> reg = horariosBanco.stream()
+                        .filter(a -> a.getDataHora().equals(dt))
+                        .findFirst();
+
+                reg.ifPresent(agenda ->
+                        slots.add(new AgendaSlotDTO(
+                                agenda.getId(),
+                                agenda.getDataHora(),
+                                false // bloqueado
+                        ))
+                );
+            } else {
+                // disponível
+                slots.add(new AgendaSlotDTO(
+                        null,
+                        dt,
+                        true
+                ));
+            }
+        }
+
+        // ====== HORÁRIOS MANUAIS FORA DO RANGE ======
+        horariosBanco.stream()
                 .filter(a -> a.getDataHora().toLocalTime().isBefore(LocalTime.of(8, 0))
                         || a.getDataHora().toLocalTime().isAfter(LocalTime.of(18, 0)))
-                .map(a -> new AgendaSlotDTO(a.getId(), a.getDataHora(), a.isDisponivel()))
-                .collect(Collectors.toList());
+                .forEach(a -> slots.add(new AgendaSlotDTO(
+                        a.getId(),
+                        a.getDataHora(),
+                        a.isDisponivel()
+                )));
 
-        slots.addAll(extras);
-
-        // Ordena tudo por horário
+        // ordena
         slots.sort(Comparator.comparing(AgendaSlotDTO::dataHora));
 
         return slots;
     }
+
 
     // ===========================================================
     // ADICIONAR HORÁRIO MANUAL (vem disponível por padrão)
@@ -164,4 +190,6 @@ public class AgendaMedicoService {
 
         agendaRepository.delete(horario);
     }
+
+
 }

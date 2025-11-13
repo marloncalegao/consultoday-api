@@ -8,24 +8,24 @@ public record AgendamentoListagemDTO(
         Long idAgendamento,
         LocalDateTime dataHora,
         String nomeMedico,
-        String CrmMedico,
+        String crmMedico,
         String nomePaciente,
-        String CpfPaciente,
+        String cpfPaciente,
         LocalDateTime dataCancelamento,
-        String MotivoCancelamento,
-        StatusAgendamento status // ✅ novo campo
+        String motivoCancelamento,
+        StatusAgendamento status
 ) {
-    public AgendamentoListagemDTO(Agendamento agendamento) {
+    public AgendamentoListagemDTO(Agendamento a) {
         this(
-                agendamento.getId(),
-                agendamento.getDataHora(),
-                agendamento.getMedico().getNome(),
-                agendamento.getMedico().getCrm(),
-                agendamento.getPaciente().getNome(),
-                agendamento.getPaciente().getCpf(),
-                agendamento.getDataCancelamento(),
-                agendamento.getMotivoCancelamento(),
-                agendamento.getStatus() // ✅ inclui o status do agendamento
+                a.getId(),
+                a.getDataHora(),
+                a.getMedico().getNome(),
+                a.getMedico().getCrm(),
+                a.getPaciente().getNome(),
+                a.getPaciente().getCpf(),
+                a.getDataCancelamento(),
+                a.getMotivoCancelamento(),
+                a.getStatus()
         );
     }
 }
