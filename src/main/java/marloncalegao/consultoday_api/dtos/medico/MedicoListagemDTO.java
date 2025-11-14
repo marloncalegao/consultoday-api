@@ -9,7 +9,8 @@ public record MedicoListagemDTO (
     String email,
     String telefone,
     String crm,
-    Especialidade especialidade
+    Especialidade especialidade,
+    String cidade
 ) {
     public MedicoListagemDTO(Medico medico) {
         this(
@@ -18,7 +19,8 @@ public record MedicoListagemDTO (
             medico.getEmail(),
             medico.getTelefone(),
             medico.getCrm(),
-            medico.getEspecialidade()
+            medico.getEspecialidade(),
+                medico.getCidade()
         );
     }
     

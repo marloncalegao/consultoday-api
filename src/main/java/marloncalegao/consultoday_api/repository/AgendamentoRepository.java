@@ -43,5 +43,10 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
                                       @Param("dataHora") LocalDateTime dataHora);
 
     boolean existsByMedicoIdAndDataHoraAndDataCancelamentoIsNull(Long id, @NotNull(message = "A data e hora são obrigatórias") @Future(message = "A data da consulta deve ser futura") LocalDateTime localDateTime);
-}
 
+    boolean existsByMedicoIdAndDataHoraAndStatusIn(
+            Long idMedico,
+            LocalDateTime dataHora,
+            List<StatusAgendamento> status);
+
+}

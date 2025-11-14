@@ -80,9 +80,17 @@ public class AgendamentoService {
 
         Medico medico = buscarMedico(dados);
 
-        if (agendamentoRepository.existsByMedicoIdAndDataHoraAndDataCancelamentoIsNull(medico.getId(), dados.dataHora())) {
-             throw new ValidacaoException("O médico está ocupado neste horário.");
+        boolean horarioOcupado = agendamentoRepository
+                .existsByMedicoIdAndDataHoraAndStatusIn(
+                        medico.getId(),
+                        dados.dataHora(),
+                        List.of(StatusAgendamento.AGENDADO, StatusAgendamento.PENDENTE)
+                );
+
+        if (horarioOcupado) {
+            throw new ValidacaoException("O médico está ocupado neste horário.");
         }
+
 
         Agendamento novoAgendamento = new Agendamento(medico, paciente, dados.dataHora(), StatusAgendamento.AGENDADO);
 

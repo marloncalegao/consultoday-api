@@ -2,6 +2,7 @@ package marloncalegao.consultoday_api.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "agenda_medico")
@@ -16,6 +17,7 @@ public class AgendaMedico {
     private Medico medico;
 
     @Column(name = "data_hora", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dataHora;
 
     @Column(name = "disponivel", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")

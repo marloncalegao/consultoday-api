@@ -18,6 +18,7 @@ public class Medico implements UsuarioAutenticado {
     private String crm;
     private String senha;
     private boolean ativo = true;
+    private String cidade;
 
     @Enumerated(EnumType.STRING)
     private Especialidade especialidade;
@@ -129,9 +130,17 @@ public class Medico implements UsuarioAutenticado {
         this.especialidade = especialidade;
     }
 
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
     // --- Construtores ---
 
-    public Medico(Long id, String nome, String email, String telefone, String crm, String senha, boolean ativo, Especialidade especialidade) {
+    public Medico(Long id, String nome, String email, String telefone, String crm, String senha, boolean ativo, Especialidade especialidade, String cidade) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -140,6 +149,7 @@ public class Medico implements UsuarioAutenticado {
         this.senha = senha;
         this.ativo = ativo;
         this.especialidade = especialidade;
+        this.cidade = cidade;
     }
 
     public Medico() {

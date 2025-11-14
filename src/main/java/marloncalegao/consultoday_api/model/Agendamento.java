@@ -2,6 +2,7 @@ package marloncalegao.consultoday_api.model;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import marloncalegao.consultoday_api.enums.StatusAgendamento;
 
 @Table(name = "agendamentos")
@@ -17,7 +18,11 @@ public class Agendamento {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "paciente_id")
     private Paciente paciente;
 
+    // Sempre serializar como string no formato yyyy-MM-dd'T'HH:mm:ss (sem timezone/offset)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dataHora;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dataCancelamento;
 
     private String motivoCancelamento;
@@ -26,6 +31,7 @@ public class Agendamento {
     private StatusAgendamento status;
 
     @Column(name = "data_finalizacao")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dataFinalizacao;
 
     //-- Getters e Setters --

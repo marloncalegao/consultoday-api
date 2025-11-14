@@ -57,7 +57,8 @@ public class MedicoService {
             dados.crm(),
             senhaCriptografada,
             true,
-            dados.especialidade()
+            dados.especialidade(),
+                dados.senha()
             );
 
         Medico medicoSalvo = medicoRepository.save(novoMedico);
@@ -84,6 +85,10 @@ public class MedicoService {
 
         if (dados.email() != null && !dados.email().isBlank()) {
             medico.setEmail(dados.email());
+        }
+
+        if (dados.cidade() != null && !dados.cidade().isBlank()) {
+            medico.setCidade(dados.cidade());
         }
 
         return new MedicoResponseDTO(medico);

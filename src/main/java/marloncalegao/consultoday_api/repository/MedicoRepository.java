@@ -36,4 +36,13 @@ public interface MedicoRepository extends JpaRepository<Medico, Long>{
         @Param("especialidade") Especialidade especialidade,
         @Param("dataHora") LocalDateTime dataHora
     );
+
+    @Query("""
+       SELECT m FROM Medico m 
+       WHERE (:nome IS NULL OR LOWER(m.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+       AND (:especialidade IS NULL OR m.especialidade = :especialidade)
+       AND (:cidade IS NULL OR LOWER(m.cidade) LIKE LOWER(CONCAT('%', :cidade, '%')))
+       """)
+    Page<Medico> buscarAvancado(String nome, String especialidade, String cidade, Pageable pageable);
+
 }

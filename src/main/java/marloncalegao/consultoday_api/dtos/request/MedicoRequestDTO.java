@@ -23,7 +23,9 @@ public record MedicoRequestDTO (
     @NotNull(message = "A especialidade é obrigatória")
     Especialidade especialidade,
 
-    boolean ativo
+    boolean ativo,
+
+    String cidade
 ) {
     
 }
